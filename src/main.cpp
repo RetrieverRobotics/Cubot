@@ -216,6 +216,6 @@ void opcontrol() {
 			if (toggle[0]) {
 				wing1 = -(SET_SPEEDS(MAX));
 			}
-			(for note keeping for me)*/
+			(for note keeping for me.)*/
 	}
 }
