@@ -72,12 +72,13 @@ void autonomous() {
 	const int MILISECONDPERTILE = 1000; //milisecond/tile when set at HALF speed
 	const int RUN_TIME = TILES * MILISECONDPERTILE;
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor front_left_mtr(2);
-	pros::Motor back_left_mtr(1);
-	pros::Motor front_right_mtr(14);
-	pros::Motor back_right_mtr(13);
-	pros::Motor left_arm(18);
-	pros::Motor right_arm(6);
+	pros::Motor front_left_mtr(3);
+	pros::Motor back_left_mtr(4);
+	pros::Motor front_right_mtr(1);
+	pros::Motor back_right_mtr(2);
+	pros::Motor mid_left_mtr(3);
+	pros::Motor mid_right_mtr(4);
+	pros::Motor arm(18);
 	pros::ADIGyro gyro(9);
 	front_right_mtr.set_reversed(true);
 	back_right_mtr.set_reversed(true); 
@@ -160,14 +161,15 @@ void autonomous() {
  */
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor front_left_mtr(3);
-	pros::Motor back_left_mtr(4);
-	pros::Motor front_right_mtr(1);
-	pros::Motor back_right_mtr(2);
-	pros::Motor mid_left_mtr(3);
-	pros::Motor mid_right_mtr(4);
-	pros::Motor left_arm(18);
-	pros::Motor right_arm(6);
+	pros::Motor front_left_mtr(19);
+	pros::Motor mid_left_mtr(18);
+	pros::Motor back_left_mtr(17);
+
+	pros::Motor front_right_mtr(8);
+	pros::Motor mid_right_mtr(9);
+	pros::Motor back_right_mtr(10);
+
+	pros::Motor arm(5);
 
 
 	front_right_mtr.set_reversed(true);
@@ -187,21 +189,31 @@ void opcontrol() {
 		static int speeds[2] {{SET_SPEEDS(ZERO)}}; 
 
 		//Arm Controls
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){ // Hold down too move arm up
-			pros::lcd::print(5, "New button press: L1 %d", !toggle[0]);
-			left_arm.move(SET_SPEEDS(MAX));
-			right_arm.move(SET_SPEEDS(MAX));
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)){ // Hold down too move arm up
+			pros::lcd::print(5, "New button press: R1 %d", !toggle[0]);
+			arm.move(SET_SPEEDS(HALF));//reverse one of the motors since it's going the opposite way
 		}
 
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){ // Hold down to move down
-			pros::lcd::print(5, "New button press: L2 %d", !toggle[1]);
-			left_arm.move(SET_SPEEDS(-MAX));
-			right_arm.move(SET_SPEEDS(-MAX));
+			pros::lcd::print(5, "New button press: L1 %d", !toggle[1]);
+			arm.move(-SET_SPEEDS(HALF));
 		}
-		//For Drive Train (Should need to reverse any motors since it's all going the same direction)
+
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)){ // Hold down to move down
+			pros::lcd::print(5, "New button press: L1 %d", !toggle[1]);
+			arm.move(SET_SPEEDS(ZERO));
+		}
+
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){ // Hold down to move down
+			pros::lcd::print(5, "New button press: L1 %d", !toggle[1]);
+			arm.move(SET_SPEEDS(ZERO));
+		}
+		//For Drive Train (Shouldn't need to reverse any motors since it's all going the same direction)
 		front_left_mtr = left;
+		mid_left_mtr = -left;
 		back_left_mtr = left; 
-		mid_left_mtr = left;
+		
+
 		front_right_mtr = right;
 		mid_right_mtr = right;
 		back_right_mtr = right; 
