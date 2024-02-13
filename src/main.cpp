@@ -169,8 +169,8 @@ void opcontrol() {
 	pros::Motor mid_right_mtr(9);
 	pros::Motor back_right_mtr(10);
 
-	pros::Motor arm(5);
-
+	pros::Motor mainarm(5);
+	pros::Motor secarm(6);
 
 	front_right_mtr.set_reversed(true);
 	back_right_mtr.set_reversed(true);
@@ -189,25 +189,42 @@ void opcontrol() {
 		static int speeds[2] {{SET_SPEEDS(ZERO)}}; 
 
 		//Arm Controls
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)){ // Hold down too move arm up
+		bool moving = false;
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){ // Hold down too move arm up
 			pros::lcd::print(5, "New button press: R1 %d", !toggle[0]);
-			arm.move(SET_SPEEDS(HALF));//reverse one of the motors since it's going the opposite way
+			mainarm.move(SET_SPEEDS(HALF));//reverse one of the motors since it's going the opposite way
+			secarm.move(-SET_SPEEDS(HALF));
+			moving = true;
+		} else{
+			mainarm.move(SET_SPEEDS(ZERO));
+			secarm.move(SET_SPEEDS(ZERO));
+		}
+		
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){ // Hold down to move down
+			pros::lcd::print(5, "New button press: R2 %d", !toggle[0]);
+			mainarm.move(-SET_SPEEDS(HALF));
+			secarm.move(SET_SPEEDS(HALF));
+		} else if (!moving) {
+			mainarm.move(SET_SPEEDS(ZERO));
+			secarm.move(SET_SPEEDS(ZERO));	
 		}
 
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)){ // Hold down to move down
-			pros::lcd::print(5, "New button press: L1 %d", !toggle[1]);
-			arm.move(-SET_SPEEDS(HALF));
-		}
+
+/*
 
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)){ // Hold down to move down
 			pros::lcd::print(5, "New button press: L1 %d", !toggle[1]);
-			arm.move(SET_SPEEDS(ZERO));
+			mainarm.move(SET_SPEEDS(ZERO));
+			secarm.move(SET_SPEEDS(ZERO));
 		}
 
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){ // Hold down to move down
 			pros::lcd::print(5, "New button press: L1 %d", !toggle[1]);
-			arm.move(SET_SPEEDS(ZERO));
+			mainarm.move(SET_SPEEDS(ZERO));
+			secarm.move(SET_SPEEDS(ZERO));
 		}
+
+		*/
 		//For Drive Train (Shouldn't need to reverse any motors since it's all going the same direction)
 		front_left_mtr = left;
 		mid_left_mtr = -left;
