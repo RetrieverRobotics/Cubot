@@ -72,13 +72,14 @@ void autonomous() {
 	const int MILISECONDPERTILE = 1000; //milisecond/tile when set at HALF speed
 	const int RUN_TIME = TILES * MILISECONDPERTILE;
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor front_left_mtr(3);
-	pros::Motor back_left_mtr(4);
-	pros::Motor front_right_mtr(1);
-	pros::Motor back_right_mtr(2);
-	pros::Motor mid_left_mtr(3);
-	pros::Motor mid_right_mtr(4);
-	pros::Motor arm(18);
+	pros::Motor front_left_mtr(19);
+	pros::Motor mid_left_mtr(18);
+	pros::Motor back_left_mtr(17);
+	pros::Motor front_right_mtr(8);
+	pros::Motor mid_right_mtr(9);
+	pros::Motor back_right_mtr(10);
+	pros::Motor mainarm(5);
+	pros::Motor secarm(6);
 	pros::ADIGyro gyro(9);
 	front_right_mtr.set_reversed(true);
 	back_right_mtr.set_reversed(true); 
@@ -170,7 +171,7 @@ void opcontrol() {
 	pros::Motor back_right_mtr(10);
 
 	pros::Motor mainarm(5);
-	pros::Motor secarm(6);
+	pros::Motor secarm(6); // If using a second motor, plug in and it'll work
 
 	front_right_mtr.set_reversed(true);
 	back_right_mtr.set_reversed(true);
@@ -210,26 +211,10 @@ void opcontrol() {
 		}
 
 
-/*
-
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)){ // Hold down to move down
-			pros::lcd::print(5, "New button press: L1 %d", !toggle[1]);
-			mainarm.move(SET_SPEEDS(ZERO));
-			secarm.move(SET_SPEEDS(ZERO));
-		}
-
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)){ // Hold down to move down
-			pros::lcd::print(5, "New button press: L1 %d", !toggle[1]);
-			mainarm.move(SET_SPEEDS(ZERO));
-			secarm.move(SET_SPEEDS(ZERO));
-		}
-
-		*/
-		//For Drive Train (Shouldn't need to reverse any motors since it's all going the same direction)
+		//For Drive Train 
 		front_left_mtr = left;
 		mid_left_mtr = -left;
 		back_left_mtr = left; 
-		
 
 		front_right_mtr = right;
 		mid_right_mtr = right;
@@ -238,13 +223,5 @@ void opcontrol() {
 		pros::lcd::print(0, "Right: %d", right);
 		pros::lcd::print(1, "Left: %d", left);
 		pros::delay(20);
-
-					/*
-			pros::lcd::print(5, "New button press: L1 %d", !toggle[0]);
-			toggle[0] = !toggle[0];
-			if (toggle[0]) {
-				wing1 = -(SET_SPEEDS(MAX));
-			}
-			(for note keeping for me.)*/
 	}
 }
